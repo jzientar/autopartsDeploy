@@ -1,0 +1,23 @@
+{
+  "manifestVersion": 1,
+  "deployments": {
+    "aspNetCoreWeb": [
+      {
+        "name": "AutoPartsCompany",
+        "parameters": {
+          "appBundle": ".",
+          "iisPath": "/",
+          "iisWebSite": "Default Web Site"
+        },
+        "publishOptions": {
+	"include": [
+	"Images",
+	"PostInstallSetup.ps1",
+	"aws-windows-deployment-manifest.json"
+	]
+	}
+      }
+    ]
+  }
+  
+}
