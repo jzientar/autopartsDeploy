@@ -103,19 +103,9 @@ namespace AutoPartsCompany
                 app.UseExceptionHandler("/error");
             }
 
-            //app.UseStaticFiles();
-            //app.UseStaticFiles(new StaticFileOptions()
-            //{
-            //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-            //    RequestPath = new PathString("/Resources")
-            //});
-
-            Directory.CreateDirectory("Images");
 
             app.UseStaticFiles(new StaticFileOptions
             {
-                
-                
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "Images")),
                 RequestPath = "/Images"
             });
