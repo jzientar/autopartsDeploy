@@ -30,8 +30,7 @@ namespace AutoPartsCompany.Controllers
             return await _context.InboxModel.Select(x => new InboxModel()
             {
                 IdInbox = x.IdInbox,
-                Message = x.Message,
-                Date = x.Date
+                IdMessage = x.IdMessage,
                 }).ToListAsync();
         }
 

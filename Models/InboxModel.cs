@@ -11,9 +11,6 @@ namespace AutoPartsCompany.Models
     {
         [Key]
         public int IdInbox { get; set; }
-        [Column(TypeName = "nvarchar(50)")]
-        public String Message { get; set; }
-        [Column(TypeName = "Date")]
-        public DateTime Date { get; set; }
+        public int IdMessage { get; set; }
     }
 }
