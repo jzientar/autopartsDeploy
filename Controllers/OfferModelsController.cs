@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoPartsCompany.Models;
+using Microsoft.AspNetCore.Hosting;
 
 namespace AutoPartsCompany.Controllers
 {
@@ -14,17 +15,30 @@ namespace AutoPartsCompany.Controllers
     public class OfferController : ControllerBase
     {
         private readonly AutoPartsDBContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public OfferController(AutoPartsDBContext context)
+        public OfferController(AutoPartsDBContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            this._hostEnvironment = hostEnvironment;
         }
 
         // GET: api/OfferModels
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OfferModel>>> GetOfferModel()
         {
-            return await _context.OfferModel.ToListAsync();
+            //return await _context.OfferModel.ToListAsync();
+            return await _context.OfferModel.Select(x => new OfferModel()
+            {
+                IdOffer = x.IdOffer,
+                IdSpare = x.IdSpare,
+                Name = x.Name,
+                Description = x.Description,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                ImageName = x.ImageName,
+                ImageSrc = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, x.ImageName)
+            }).ToListAsync();
         }
 
         // GET: api/OfferModels/5

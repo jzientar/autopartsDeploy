@@ -21,5 +21,6 @@ namespace AutoPartsCompany.Models
 
         public DbSet<AutoPartsCompany.Models.OfferModel> OfferModel { get; set; }
         public DbSet<AutoPartsCompany.Models.InboxModel> InboxModel { get; set; }
+        public DbSet<AutoPartsCompany.Models.MessageModel> MessageModel { get; set; }
     }
 }

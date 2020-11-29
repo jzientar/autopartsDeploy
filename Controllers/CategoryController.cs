@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoPartsCompany.Models;
 using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace AutoPartsCompany.Controllers
 {
@@ -55,15 +56,18 @@ namespace AutoPartsCompany.Controllers
 
         // PUT: api/Category/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategoryModel(int id, CategoryModel categoryModel)
+        public async Task<IActionResult> PutCategoryModel(int id, [FromForm] CategoryModel categoryModel)
         {
             if (id != categoryModel.IdCategory)
             {
                 return BadRequest();
             }
-
+            if (categoryModel.ImageFile != null)
+            {
+                DeleteImage(categoryModel.ImageName);
+                categoryModel.ImageName = await SaveImage(categoryModel.ImageFile);
+            }
             _context.Entry(categoryModel).State = EntityState.Modified;
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -119,12 +123,13 @@ namespace AutoPartsCompany.Controllers
         }
    
         [HttpPost]
-        public async Task<ActionResult<CategoryModel>> PostCategoryModel(CategoryModel categoryModel)
+        public async Task<ActionResult<CategoryModel>> PostCategoryModel([FromForm] CategoryModel categoryModel)
         {
+            categoryModel.ImageName = await SaveImage(categoryModel.ImageFile);
             _context.CategoryModel.Add(categoryModel);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCategoryModel", new { id = categoryModel.IdCategory }, categoryModel);
+            return StatusCode(201);
+            //return CreatedAtAction("GetCategoryModel", new { id = categoryModel.IdCategory }, categoryModel);
         }
 
         // DELETE: api/Category/5
@@ -136,7 +141,7 @@ namespace AutoPartsCompany.Controllers
             {
                 return NotFound();
             }
-
+            DeleteImage(categoryModel.ImageName);
             _context.CategoryModel.Remove(categoryModel);
             await _context.SaveChangesAsync();
 
@@ -146,6 +151,27 @@ namespace AutoPartsCompany.Controllers
         private bool CategoryModelExists(int id)
         {
             return _context.CategoryModel.Any(e => e.IdCategory == id);
+        }
+
+        [NonAction]
+        public async Task<string> SaveImage(IFormFile imageFile)
+        {
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+            return imageName;
+        }
+
+        [NonAction]
+        public void DeleteImage(string imageName)
+        {
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            if (System.IO.File.Exists(imagePath))
+                System.IO.File.Delete(imagePath);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,5 +21,12 @@ namespace AutoPartsCompany.Models
         public DateTime StartDate { get; set; }
         [Column(TypeName = "Date")]
         public DateTime EndDate { get; set; }
+        // IMAGENES
+        public string ImageName { get; set; }
+        [NotMapped]
+        public IFormFile ImageFile { get; set; }
+        [NotMapped]
+        public string ImageSrc { get; set; }
+
     }
 }
