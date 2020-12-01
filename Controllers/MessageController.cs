@@ -24,7 +24,18 @@ namespace AutoPartsCompany.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MessageModel>>> GetMessageModel()
         {
-            return await _context.MessageModel.ToListAsync();
+            return await _context.MessageModel.Select(x => new MessageModel()
+            {
+
+                IdMessage = x.IdMessage,
+                FullName = x.FullName,
+                PhoneNumber = x.PhoneNumber,
+                Subject = x.Subject,
+                Email = x.Email,
+                Message = x.Message,
+                Date = x.Date,
+                Read = x.Read
+            }).ToListAsync();
         }
 
         // GET: api/Message/5
@@ -42,6 +53,8 @@ namespace AutoPartsCompany.Controllers
         }
 
         // PUT: api/Message/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMessageModel(int id, MessageModel messageModel)
         {
@@ -72,6 +85,8 @@ namespace AutoPartsCompany.Controllers
         }
 
         // POST: api/Message
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<MessageModel>> PostMessageModel(MessageModel messageModel)
         {
