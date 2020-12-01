@@ -28,6 +28,7 @@ namespace AutoPartsCompany.Controllers
             {
 
                 IdMessage = x.IdMessage,
+                IdInbox = x.IdInbox,
                 FullName = x.FullName,
                 PhoneNumber = x.PhoneNumber,
                 Subject = x.Subject,
