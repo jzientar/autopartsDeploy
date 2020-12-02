@@ -35,6 +35,7 @@ namespace AutoPartsCompany.Controllers
                 Name = x.Name,
                 MarkSpare = x.MarkSpare,
                 Description = x.Description,
+                Quantity = x.Quantity,
                 Price = x.Price,
                 TypeVehicle = x.TypeVehicle,
                 MarkVehicle = x.MarkVehicle,

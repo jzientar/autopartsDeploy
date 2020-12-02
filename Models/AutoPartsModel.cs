@@ -23,6 +23,7 @@ namespace AutoPartsCompany.Models
         
         [Column(TypeName = "nvarchar(100)")]
         public string Description { get; set; }
+        public int Quantity { get; set; }
         public double Price { get; set; }
         
         [Column(TypeName = "nvarchar(50)")]
@@ -36,6 +37,7 @@ namespace AutoPartsCompany.Models
 
         [Column(TypeName = "nvarchar(100)")]
         public string ImageName { get; set; }
+        public int Quantity { get; set; }
 
         [NotMapped]
         public IFormFile ImageFile { get; set; }
