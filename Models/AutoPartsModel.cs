@@ -37,7 +37,6 @@ namespace AutoPartsCompany.Models
 
         [Column(TypeName = "nvarchar(100)")]
         public string ImageName { get; set; }
-        public int Quantity { get; set; }
 
         [NotMapped]
         public IFormFile ImageFile { get; set; }
