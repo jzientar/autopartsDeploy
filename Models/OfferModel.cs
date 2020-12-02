@@ -22,6 +22,7 @@ namespace AutoPartsCompany.Models
         [Column(TypeName = "Date")]
         public DateTime EndDate { get; set; }
         // IMAGENES
+        [Column(TypeName ="nvarchar(100)")]
         public string ImageName { get; set; }
         [NotMapped]
         public IFormFile ImageFile { get; set; }

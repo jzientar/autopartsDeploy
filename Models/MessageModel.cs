@@ -11,7 +11,6 @@ namespace AutoPartsCompany.Models
     {
         [Key]
         public int IdMessage { get; set; }
-        public int IdInbox { get; set; }
         [Column(TypeName = "nvarchar(50)")]
         public string FullName { get; set; }
         [Column(TypeName = "nvarchar(20)")]

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoPartsCompany.Models;
 using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace AutoPartsCompany.Controllers
 {
@@ -51,17 +52,23 @@ namespace AutoPartsCompany.Controllers
             {
                 return NotFound();
             }
-
+            offerModel.ImageSrc = string.Format("{0}://{1}{2}/Images{3}", Request.Scheme, Request.Host, Request.PathBase, offerModel.ImageName);
             return offerModel;
         }
 
         // PUT: api/OfferModels/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOfferModel(int id, OfferModel offerModel)
+        public async Task<IActionResult> PutOfferModel(int id, [FromForm] OfferModel offerModel)
         {
             if (id != offerModel.IdOffer)
             {
                 return BadRequest();
+            }
+
+            if (offerModel.ImageFile != null)
+            {
+                DeleteImage(offerModel.ImageName);
+                offerModel.ImageName = await SaveImage(offerModel.ImageFile);
             }
 
             _context.Entry(offerModel).State = EntityState.Modified;
@@ -87,12 +94,13 @@ namespace AutoPartsCompany.Controllers
 
         // POST: api/OfferModels
         [HttpPost]
-        public async Task<ActionResult<OfferModel>> PostOfferModel(OfferModel offerModel)
+        public async Task<ActionResult<OfferModel>> PostOfferModel([FromForm] OfferModel offerModel)
         {
+            offerModel.ImageName = await SaveImage(offerModel.ImageFile);
             _context.OfferModel.Add(offerModel);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOfferModel", new { id = offerModel.IdOffer }, offerModel);
+            return StatusCode(201);
+            //return CreatedAtAction("GetOfferModel", new { id = offerModel.IdOffer }, offerModel);
         }
 
         // DELETE: api/OfferModels/5
@@ -105,6 +113,7 @@ namespace AutoPartsCompany.Controllers
                 return NotFound();
             }
 
+            DeleteImage(offerModel.ImageName);
             _context.OfferModel.Remove(offerModel);
             await _context.SaveChangesAsync();
 
@@ -115,5 +124,27 @@ namespace AutoPartsCompany.Controllers
         {
             return _context.OfferModel.Any(e => e.IdOffer == id);
         }
+
+        [NonAction]
+        public async Task<string> SaveImage(IFormFile imageFile)
+        {
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName).Take(10).ToArray()).Replace(' ', '-');
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+            return imageName;
+        }
+
+        [NonAction]
+        public void DeleteImage(string imageName)
+        {
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            if (System.IO.File.Exists(imagePath))
+                System.IO.File.Delete(imagePath);
+        }
+
     }
 }
